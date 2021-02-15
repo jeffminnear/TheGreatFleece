@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
             SetPlayerMovePoint(Input.mousePosition);
         }
 
-        AnimateMovement();
+        HandleMovement();
     }
 
     void InitializeMovePoint()
@@ -46,9 +46,9 @@ public class Player : MonoBehaviour
         p_Animator.SetBool("Walk", false);
     }
 
-    void AnimateMovement()
+    void HandleMovement()
     {
-        if (!PlayerIsAtDestination())
+        if (!IsPlayerAtDestination())
         {
             if (!p_Walk)
             {
@@ -66,9 +66,9 @@ public class Player : MonoBehaviour
         }
     }
 
-    bool PlayerIsAtDestination()
+    bool IsPlayerAtDestination()
     {
-        return (Vector3.Distance(transform.position, p_MovePoint.transform.position) < p_Agent.stoppingDistance);
+        return (Vector3.Distance(transform.position, p_Agent.destination) < p_Agent.stoppingDistance);
     }
 
     void SetPlayerMovePoint(Vector3 position)
