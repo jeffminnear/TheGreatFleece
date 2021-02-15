@@ -5,14 +5,13 @@ using UnityEngine.AI;
 
 public class Player : MonoBehaviour
 {
-    private GameObject _playerMovePoint;
-    private NavMeshAgent _agent;
-    [SerializeField]
-    private Animator _animator;
+    private GameObject p_MovePoint;
+    private NavMeshAgent p_Agent;
+    private Animator p_Animator;
 
     [SerializeField]
-    private float _moveSpeed = 5f;
-    private bool _walk = false;
+    private float p_MoveSpeed = 5f;
+    private bool p_Walk = false;
 
     void Awake()
     {
@@ -27,28 +26,49 @@ public class Player : MonoBehaviour
             SetPlayerMovePoint(Input.mousePosition);
         }
 
-        Move();
+        AnimateMovement();
     }
 
     void InitializeMovePoint()
     {
-        _playerMovePoint = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        _playerMovePoint.GetComponent<MeshRenderer>().enabled = false;
-        _playerMovePoint.SetActive(false);
+        p_MovePoint = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        p_MovePoint.GetComponent<MeshRenderer>().enabled = false;
+        p_MovePoint.transform.position = transform.position;
+        p_MovePoint.SetActive(false);
     }
 
     void InitializePlayer()
     {
-        _agent = gameObject.GetComponent<NavMeshAgent>();
-        _agent.speed = _moveSpeed;
+        p_Agent = gameObject.GetComponent<NavMeshAgent>();
+        p_Agent.speed = p_MoveSpeed;
+
+        p_Animator = gameObject.GetComponentInChildren<Animator>();
+        p_Animator.SetBool("Walk", false);
     }
 
-    void Move()
+    void AnimateMovement()
     {
-        if (transform.position != _agent.destination)
+        if (!PlayerIsAtDestination())
         {
-            // if not walk : walk
+            if (!p_Walk)
+            {
+                p_Walk = true;
+                p_Animator.SetBool("Walk", p_Walk);
+            }
         }
+        else
+        {
+            if (p_Walk)
+            {
+                p_Walk = false;
+                p_Animator.SetBool("Walk", p_Walk);
+            }
+        }
+    }
+
+    bool PlayerIsAtDestination()
+    {
+        return (Vector3.Distance(transform.position, p_MovePoint.transform.position) < p_Agent.stoppingDistance);
     }
 
     void SetPlayerMovePoint(Vector3 position)
@@ -59,9 +79,9 @@ public class Player : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
         {
-            _playerMovePoint.transform.position = hit.point;
-            _playerMovePoint.SetActive(true);
-            _agent.SetDestination(_playerMovePoint.transform.position);
+            p_MovePoint.transform.position = hit.point;
+            p_MovePoint.SetActive(true);
+            p_Agent.SetDestination(p_MovePoint.transform.position);
         }
     }
 }
