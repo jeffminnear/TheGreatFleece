@@ -7,9 +7,12 @@ public class Player : MonoBehaviour
 {
     private GameObject _playerMovePoint;
     private NavMeshAgent _agent;
+    [SerializeField]
+    private Animator _animator;
 
     [SerializeField]
     private float _moveSpeed = 5f;
+    private bool _walk = false;
 
     void Awake()
     {
@@ -42,7 +45,10 @@ public class Player : MonoBehaviour
 
     void Move()
     {
-
+        if (transform.position != _agent.destination)
+        {
+            // if not walk : walk
+        }
     }
 
     void SetPlayerMovePoint(Vector3 position)
