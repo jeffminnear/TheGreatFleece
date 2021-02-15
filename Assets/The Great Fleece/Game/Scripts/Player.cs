@@ -53,7 +53,6 @@ public class Player : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
         {
-            Debug.Log("Floor position: " + hit.point);
             _playerMovePoint.transform.position = hit.point;
             _playerMovePoint.SetActive(true);
             _agent.SetDestination(_playerMovePoint.transform.position);
