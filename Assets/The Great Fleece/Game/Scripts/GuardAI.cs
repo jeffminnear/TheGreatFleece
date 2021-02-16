@@ -12,11 +12,10 @@ public class GuardAI : MonoBehaviour
     }
     public NavMode _navMode;
     public List<Transform> g_Waypoints;
+    public int _waypointsStartIndex = 0;
 
-    public int _currentTarget = 0;
+    private int _currentTarget;
     private NavMeshAgent g_Agent;
-    [SerializeField]
-    private float _patrolPauseDelay = 1.5f;
     [SerializeField]
     private bool g_Walk = false;
     private bool _reversing = false;
@@ -33,15 +32,13 @@ public class GuardAI : MonoBehaviour
 
     void InitializeGuard()
     {
+        _currentTarget = _waypointsStartIndex;
+
         g_Agent = gameObject.GetComponent<NavMeshAgent>();
 
         if (g_Waypoints.Count > 0 && g_Waypoints[_currentTarget] != null)
         {
             g_Agent.SetDestination(g_Waypoints[_currentTarget].position);
-            if (IsGuardAtDestination())
-            {
-                StartCoroutine(PatrolPauseRoutine());
-            }
         }
         else
         {
@@ -56,21 +53,21 @@ public class GuardAI : MonoBehaviour
 
     void HandleMovement()
     {
-        if (!IsGuardAtDestination())
-        {
-            // make sure walking animation is running
-            if (!g_Walk)
-            {
-                g_Walk = true;
-            }
-        }
-        else
+        if (IsGuardAtDestination())
         {
             // make sure walking animation has stopped
             if (g_Walk)
             {
                 g_Walk = false;
-                StartCoroutine(PatrolPauseRoutine());
+                SetNextWaypoint();
+            }
+        }
+        else
+        {            
+            // make sure walking animation is running
+            if (!g_Walk)
+            {
+                g_Walk = true;
             }
         }
     }
@@ -94,7 +91,7 @@ public class GuardAI : MonoBehaviour
             {
                 _reversing = false;
                 _currentTarget++;
-                SetWaypoint(_currentTarget);
+                StartCoroutine(SetWaypointAfterPause(_currentTarget));
             }
         }
         else
@@ -115,7 +112,7 @@ public class GuardAI : MonoBehaviour
                     case NavMode.Reverse:
                         _reversing = true;
                         _currentTarget--;
-                        SetWaypoint(_currentTarget);
+                        StartCoroutine(SetWaypointAfterPause(_currentTarget));
                         break;
                     default:
                         break;
@@ -132,10 +129,15 @@ public class GuardAI : MonoBehaviour
         }
     }
 
-    IEnumerator PatrolPauseRoutine()
+    float GetPatrolPauseDelay()
     {
-        yield return new WaitForSeconds(_patrolPauseDelay);
+        return Random.Range(2f, 5f);
+    }
 
-        SetNextWaypoint();
+    IEnumerator SetWaypointAfterPause(int waypointIndex)
+    {
+        yield return new WaitForSeconds(GetPatrolPauseDelay());
+
+        SetWaypoint(waypointIndex);
     }
 }
