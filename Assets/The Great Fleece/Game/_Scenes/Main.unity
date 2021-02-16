@@ -19912,6 +19912,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1362580810}
     m_Modifications:
+    - target: {fileID: 680710259, guid: 6b8e3a1939662ee44908a15fc4dafb93, type: 3}
+      propertyPath: g_Waypoints.Array.data[0]
+      value: 
+      objectReference: {fileID: 436291575}
+    - target: {fileID: 680710259, guid: 6b8e3a1939662ee44908a15fc4dafb93, type: 3}
+      propertyPath: g_Waypoints.Array.data[1]
+      value: 
+      objectReference: {fileID: 333813469}
+    - target: {fileID: 680710259, guid: 6b8e3a1939662ee44908a15fc4dafb93, type: 3}
+      propertyPath: g_Waypoints.Array.data[2]
+      value: 
+      objectReference: {fileID: 1867681094}
     - target: {fileID: 1111442448927152, guid: 6b8e3a1939662ee44908a15fc4dafb93, type: 3}
       propertyPath: m_Name
       value: SecurityGuard
@@ -19968,54 +19980,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 680710255}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &680710257 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1111442448927152, guid: 6b8e3a1939662ee44908a15fc4dafb93,
-    type: 3}
-  m_PrefabInstance: {fileID: 680710255}
-  m_PrefabAsset: {fileID: 0}
---- !u!195 &680710258
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 680710257}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.29
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 1
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 1.55
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
---- !u!114 &680710259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 680710257}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87cb2bc5ab075f048b498435f783316d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _navMode: 1
-  g_Waypoints:
-  - {fileID: 436291575}
-  - {fileID: 333813469}
-  - {fileID: 1867681094}
-  _waypointsStartIndex: 1
-  _currentTarget: 0
-  g_Walk: 0
 --- !u!1 &687565483
 GameObject:
   m_ObjectHideFlags: 0
@@ -27038,8 +27002,7 @@ MonoBehaviour:
   _navMode: 0
   g_Waypoints: []
   _waypointsStartIndex: 0
-  _currentTarget: 0
-  g_Walk: 0
+  _walk: 0
 --- !u!1001 &995593678
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32408,8 +32371,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   _waypointsStartIndex: 0
-  _currentTarget: 0
-  g_Walk: 0
+  _walk: 0
 --- !u!1 &1268561637
 GameObject:
   m_ObjectHideFlags: 0

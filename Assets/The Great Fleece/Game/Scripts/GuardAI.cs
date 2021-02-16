@@ -16,8 +16,9 @@ public class GuardAI : MonoBehaviour
 
     private int _currentTarget;
     private NavMeshAgent g_Agent;
+    private Animator g_Animator;
     [SerializeField]
-    private bool g_Walk = false;
+    private bool _walk = false;
     private bool _reversing = false;
 
     void Awake()
@@ -35,6 +36,7 @@ public class GuardAI : MonoBehaviour
         _currentTarget = _waypointsStartIndex;
 
         g_Agent = gameObject.GetComponent<NavMeshAgent>();
+        g_Animator = gameObject.GetComponent<Animator>();
 
         if (g_Waypoints.Count > 0 && g_Waypoints[_currentTarget] != null)
         {
@@ -56,20 +58,25 @@ public class GuardAI : MonoBehaviour
         if (IsGuardAtDestination())
         {
             // make sure walking animation has stopped
-            if (g_Walk)
+            if (_walk)
             {
-                g_Walk = false;
                 SetNextWaypoint();
             }
         }
         else
         {            
             // make sure walking animation is running
-            if (!g_Walk)
+            if (!_walk)
             {
-                g_Walk = true;
+                StartCoroutine(TurnAndWalk());
             }
         }
+    }
+
+    void SetWalk(bool val)
+    {
+        _walk = val;
+        g_Animator.SetBool("Walk", val);
     }
 
     void SetNextWaypoint()
@@ -136,8 +143,17 @@ public class GuardAI : MonoBehaviour
 
     IEnumerator SetWaypointAfterPause(int waypointIndex)
     {
+        SetWalk(false);
+
         yield return new WaitForSeconds(GetPatrolPauseDelay());
 
         SetWaypoint(waypointIndex);
+    }
+
+    IEnumerator TurnAndWalk()
+    {
+        yield return new WaitForSeconds(0.25f);
+
+        SetWalk(true);
     }
 }
