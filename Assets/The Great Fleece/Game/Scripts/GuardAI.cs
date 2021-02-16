@@ -5,14 +5,21 @@ using UnityEngine.AI;
 
 public class GuardAI : MonoBehaviour
 {
+    public enum NavMode
+    {
+        Loop,
+        Reverse
+    }
+    public NavMode _navMode;
     public List<Transform> g_Waypoints;
-    public int _currentTarget;
-    public bool _loopWaypoints = true;
 
+    public int _currentTarget = 0;
     private NavMeshAgent g_Agent;
     [SerializeField]
     private float _patrolPauseDelay = 1.5f;
+    [SerializeField]
     private bool g_Walk = false;
+    private bool _reversing = false;
 
     void Awake()
     {
@@ -28,10 +35,13 @@ public class GuardAI : MonoBehaviour
     {
         g_Agent = gameObject.GetComponent<NavMeshAgent>();
 
-        if (g_Waypoints.Count > 0 && g_Waypoints[0] != null)
+        if (g_Waypoints.Count > 0 && g_Waypoints[_currentTarget] != null)
         {
-            _currentTarget = 0;
             g_Agent.SetDestination(g_Waypoints[_currentTarget].position);
+            if (IsGuardAtDestination())
+            {
+                StartCoroutine(PatrolPauseRoutine());
+            }
         }
         else
         {
@@ -73,16 +83,43 @@ public class GuardAI : MonoBehaviour
             return;
         }
 
-        if (_currentTarget < maxIndex)
+        if (_reversing)
         {
-            _currentTarget++;
-            SetWaypoint(_currentTarget);
+            if (_currentTarget > 0)
+            {
+                _currentTarget = 0;
+                SetWaypoint(_currentTarget);
+            }
+            else // back to first waypoint
+            {
+                _reversing = false;
+                _currentTarget++;
+                SetWaypoint(_currentTarget);
+            }
         }
         else
         {
-            if (_loopWaypoints)
+            if (_currentTarget < maxIndex)
             {
-                SetWaypoint(0);
+                _currentTarget++;
+                SetWaypoint(_currentTarget);
+            }
+            else // last waypoint in list
+            {
+                switch (_navMode)
+                {
+                    case NavMode.Loop:
+                        _currentTarget = 0;
+                        SetWaypoint(_currentTarget);
+                        break;
+                    case NavMode.Reverse:
+                        _reversing = true;
+                        _currentTarget--;
+                        SetWaypoint(_currentTarget);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
