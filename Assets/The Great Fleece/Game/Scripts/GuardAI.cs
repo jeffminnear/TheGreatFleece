@@ -17,7 +17,6 @@ public class GuardAI : MonoBehaviour
     private int _currentTarget;
     private NavMeshAgent g_Agent;
     private Animator g_Animator;
-    [SerializeField]
     private bool _walk = false;
     private bool _reversing = false;
 

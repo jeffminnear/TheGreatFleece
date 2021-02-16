@@ -481,8 +481,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4423841752579072}
   - component: {fileID: -3864390159770126557}
-  - component: {fileID: 680710258}
   - component: {fileID: 680710259}
+  - component: {fileID: 1020177030757219970}
   m_Layer: 0
   m_Name: SecurityGuard
   m_TagString: Guard1
@@ -525,7 +525,23 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!195 &680710258
+--- !u!114 &680710259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1111442448927152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87cb2bc5ab075f048b498435f783316d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _navMode: 0
+  g_Waypoints: []
+  _waypointsStartIndex: 0
+  _walk: 0
+--- !u!195 &1020177030757219970
 NavMeshAgent:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -547,25 +563,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &680710259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1111442448927152}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87cb2bc5ab075f048b498435f783316d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _navMode: 1
-  g_Waypoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  _waypointsStartIndex: 1
-  g_Walk: 0
 --- !u!1 &1114851893369222
 GameObject:
   m_ObjectHideFlags: 0
