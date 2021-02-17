@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+using static Helpers.Validation;
+
+[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(Animator))]
 public class Player : MonoBehaviour
 {
     private GameObject p_MovePoint;
@@ -40,9 +44,11 @@ public class Player : MonoBehaviour
     void InitializePlayer()
     {
         p_Agent = gameObject.GetComponent<NavMeshAgent>();
-        p_Agent.speed = p_MoveSpeed;
-
         p_Animator = gameObject.GetComponentInChildren<Animator>();
+
+        VerifyComponents(gameObject, p_Agent, p_Animator);
+
+        p_Agent.speed = p_MoveSpeed;
         p_Animator.SetBool("Walk", false);
     }
 

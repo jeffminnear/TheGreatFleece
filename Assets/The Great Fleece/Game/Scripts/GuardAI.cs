@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+using static Helpers.Validation;
+
+[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(Animator))]
 public class GuardAI : MonoBehaviour
 {
     public enum NavMode
@@ -36,6 +40,8 @@ public class GuardAI : MonoBehaviour
 
         g_Agent = gameObject.GetComponent<NavMeshAgent>();
         g_Animator = gameObject.GetComponent<Animator>();
+
+        VerifyComponents(gameObject, g_Agent, g_Animator);
 
         if (g_Waypoints.Count > 0 && g_Waypoints[_currentTarget] != null)
         {
