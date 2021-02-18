@@ -74,7 +74,7 @@ public class Player : MonoBehaviour
 
     bool IsPlayerAtDestination()
     {
-        return (Vector3.Distance(transform.position, p_Agent.destination) < p_Agent.stoppingDistance);
+        return (Vector3.Distance(transform.position, p_MovePoint.transform.position) < p_Agent.stoppingDistance);
     }
 
     void SetPlayerMovePoint(Vector3 position)
