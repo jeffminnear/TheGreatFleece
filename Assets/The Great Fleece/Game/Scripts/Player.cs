@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+using static Helpers.Validation;
+
+[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(Animator))]
 public class Player : MonoBehaviour
 {
     private GameObject p_MovePoint;
@@ -26,7 +30,7 @@ public class Player : MonoBehaviour
             SetPlayerMovePoint(Input.mousePosition);
         }
 
-        AnimateMovement();
+        HandleMovement();
     }
 
     void InitializeMovePoint()
@@ -40,15 +44,17 @@ public class Player : MonoBehaviour
     void InitializePlayer()
     {
         p_Agent = gameObject.GetComponent<NavMeshAgent>();
-        p_Agent.speed = p_MoveSpeed;
-
         p_Animator = gameObject.GetComponentInChildren<Animator>();
+
+        VerifyComponents(gameObject, p_Agent, p_Animator);
+
+        p_Agent.speed = p_MoveSpeed;
         p_Animator.SetBool("Walk", false);
     }
 
-    void AnimateMovement()
+    void HandleMovement()
     {
-        if (!PlayerIsAtDestination())
+        if (!IsPlayerAtDestination())
         {
             if (!p_Walk)
             {
@@ -66,7 +72,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    bool PlayerIsAtDestination()
+    bool IsPlayerAtDestination()
     {
         return (Vector3.Distance(transform.position, p_MovePoint.transform.position) < p_Agent.stoppingDistance);
     }
