@@ -14,8 +14,8 @@ public class Player : MonoBehaviour
     private Animator p_Animator;
 
     [SerializeField]
-    private float p_MoveSpeed = 5f;
-    private bool p_Walk = false;
+    private float moveSpeed = 5f;
+    private bool isWalking = false;
 
     void Awake()
     {
@@ -25,11 +25,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0)) // Left Click
-        {
-            SetPlayerMovePoint(Input.mousePosition);
-        }
-
+        GetInput();
         HandleMovement();
     }
 
@@ -48,28 +44,40 @@ public class Player : MonoBehaviour
 
         VerifyComponents(gameObject, p_Agent, p_Animator);
 
-        p_Agent.speed = p_MoveSpeed;
+        p_Agent.speed = moveSpeed;
         p_Animator.SetBool("Walk", false);
+    }
+
+    void GetInput()
+    {
+        if (Input.GetMouseButtonDown(0)) // Left Click
+        {
+            SetPlayerMovePoint(Input.mousePosition);
+        }
     }
 
     void HandleMovement()
     {
-        if (!IsPlayerAtDestination())
+        if (IsPlayerAtDestination())
         {
-            if (!p_Walk)
+            if (isWalking)
             {
-                p_Walk = true;
-                p_Animator.SetBool("Walk", p_Walk);
+                SetWalk(false);
             }
         }
         else
         {
-            if (p_Walk)
+            if (!isWalking)
             {
-                p_Walk = false;
-                p_Animator.SetBool("Walk", p_Walk);
+                SetWalk(true);
             }
         }
+    }
+
+    void SetWalk(bool val)
+    {
+        isWalking = val;
+        p_Animator.SetBool("Walk", val);
     }
 
     bool IsPlayerAtDestination()

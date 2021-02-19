@@ -5,14 +5,14 @@ using UnityEngine;
 public class CameraTrigger : MonoBehaviour
 {
     [SerializeField]
-    private Transform _cameraPosition;
+    private Transform cameraPosition;
     
     void OnTriggerEnter(Collider other)
     {
         if (other.transform.tag == "Player")
         {
-            Camera.main.transform.position = _cameraPosition.transform.position;
-            Camera.main.transform.rotation = _cameraPosition.transform.rotation;
+            Camera.main.transform.position = cameraPosition.transform.position;
+            Camera.main.transform.rotation = cameraPosition.transform.rotation;
         }
     }
 }
