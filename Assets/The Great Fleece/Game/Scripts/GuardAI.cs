@@ -102,7 +102,7 @@ public class GuardAI : MonoBehaviour
         }
     }
 
-    void SetWalk(bool val)
+    void SetWalking(bool val)
     {
         isWalking = val;
         g_Animator.SetBool("Walk", val);
@@ -174,7 +174,7 @@ public class GuardAI : MonoBehaviour
 
     IEnumerator SetWaypointAfterPause(int waypointIndex)
     {
-        SetWalk(false);
+        SetWalking(false);
 
         yield return new WaitForSeconds(GetPatrolPauseDelay());
 
@@ -185,6 +185,6 @@ public class GuardAI : MonoBehaviour
     {
         yield return new WaitForSeconds(0.25f);
 
-        SetWalk(true);
+        SetWalking(true);
     }
 }

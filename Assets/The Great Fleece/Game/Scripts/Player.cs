@@ -62,19 +62,19 @@ public class Player : MonoBehaviour
         {
             if (isWalking)
             {
-                SetWalk(false);
+                SetWalking(false);
             }
         }
         else
         {
             if (!isWalking)
             {
-                SetWalk(true);
+                SetWalking(true);
             }
         }
     }
 
-    void SetWalk(bool val)
+    void SetWalking(bool val)
     {
         isWalking = val;
         p_Animator.SetBool("Walk", val);
