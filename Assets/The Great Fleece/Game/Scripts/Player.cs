@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     private Animator p_Animator;
     [SerializeField]
     private float moveSpeed = 5f;
+    [SerializeField]
     private float turnSpeed = 8f;
     private bool isWalking = false;
     private Coroutine turnCoroutine;
@@ -102,9 +103,8 @@ public class Player : MonoBehaviour
 
     IEnumerator TurnTowardsMovePointAndWalk()
     {
-        Quaternion targetRotation = Quaternion.LookRotation(p_MovePoint.transform.position - transform.position);
-        targetRotation.x = transform.rotation.x;
-        targetRotation.z = transform.rotation.z;
+        Quaternion lookRotation = Quaternion.LookRotation(p_MovePoint.transform.position - transform.position);
+        Quaternion targetRotation = new Quaternion(transform.rotation.x, lookRotation.y, transform.rotation.z, lookRotation.w);
 
         while (Mathf.Abs(Quaternion.Dot(transform.rotation, targetRotation)) < 0.98f)
         {
