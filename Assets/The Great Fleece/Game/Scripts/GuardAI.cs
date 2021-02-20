@@ -28,6 +28,21 @@ public class GuardAI : MonoBehaviour
     private Animator g_Animator;
     private bool isWalking = false;
     private bool isReversing = false;
+    private float stoppingDistance = 1f;
+    [SerializeField]
+    private float alertDistance = 20f;
+    private bool alerted = false;
+
+    public void CoinDroppedAtPoint(Vector3 point)
+    {
+        float distance = (transform.position - point).magnitude;
+        if (distance < alertDistance)
+        {
+            alerted = true;
+            g_Agent.SetDestination(point);
+            g_Agent.stoppingDistance = 2.5f;
+        }
+    }
 
     void Awake()
     {
@@ -48,6 +63,8 @@ public class GuardAI : MonoBehaviour
         g_Animator = gameObject.GetComponent<Animator>();
 
         VerifyComponents(gameObject, g_Agent, g_Animator);
+
+        g_Agent.stoppingDistance = stoppingDistance;
 
         if (localWaypoints.Count > 0 && localWaypoints[currentTarget] != null)
         {
@@ -86,15 +103,20 @@ public class GuardAI : MonoBehaviour
     {
         if (IsGuardAtDestination())
         {
-            // make sure walking animation has stopped
             if (isWalking)
             {
-                SetNextWaypoint();
+                if (alerted)
+                {
+                    StartCoroutine(SetWaypointAfterPause(currentTarget));
+                }
+                else
+                {
+                    SetNextWaypoint();
+                }
             }
         }
         else
         {            
-            // make sure walking animation is running
             if (!isWalking)
             {
                 StartCoroutine(TurnAndWalk());
@@ -161,7 +183,7 @@ public class GuardAI : MonoBehaviour
 
     void SetWaypoint(int i)
     {
-        if (localWaypoints[i] != null)
+        if (localWaypoints.Count > i && localWaypoints[i] != null)
         {
             g_Agent.SetDestination(localWaypoints[i].position);
         }
@@ -176,7 +198,15 @@ public class GuardAI : MonoBehaviour
     {
         SetWalking(false);
 
-        yield return new WaitForSeconds(GetPatrolPauseDelay());
+        float delay = GetPatrolPauseDelay();
+
+        if (alerted)
+        {
+            alerted = false;
+            delay *= 2f;
+        }
+
+        yield return new WaitForSeconds(delay);
 
         SetWaypoint(waypointIndex);
     }

@@ -155,6 +155,12 @@ public class Player : MonoBehaviour
         {
             coinsRemaining--;
             Instantiate(coinPrefab, coinTarget, Quaternion.identity);
+
+            GuardAI[] guards = GameObject.FindObjectsOfType<GuardAI>();
+            foreach( GuardAI guard in guards)
+            {
+                guard.CoinDroppedAtPoint(coinTarget);
+            }
         }
     }
 
