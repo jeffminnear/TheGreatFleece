@@ -40852,8 +40852,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bedae601cd2f34d41b4482fa60ec8483, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  coinPrefab: {fileID: 1667124884920464, guid: 4aee20544b12e47219af132208bc5ccb, type: 3}
   moveSpeed: 5
   turnSpeed: 6.15
+  coinsRemaining: 1
 --- !u!54 &1758031694
 Rigidbody:
   m_ObjectHideFlags: 0

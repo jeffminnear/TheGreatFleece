@@ -9,6 +9,8 @@ using static Helpers.Validation;
 [RequireComponent(typeof(Animator))]
 public class Player : MonoBehaviour
 {
+    public GameObject coinPrefab;
+
     private GameObject p_MovePoint;
     private NavMeshAgent p_Agent;
     private Animator p_Animator;
@@ -18,6 +20,9 @@ public class Player : MonoBehaviour
     private float turnSpeed = 8f;
     private bool isWalking = false;
     private Coroutine turnCoroutine;
+    private Vector3 coinTarget;
+    [SerializeField]
+    private int coinsRemaining = 1;
 
     void Awake()
     {
@@ -56,6 +61,10 @@ public class Player : MonoBehaviour
         {
             SetPlayerMovePoint(Input.mousePosition);
         }
+        else if (Input.GetMouseButton(1)) // Right Click
+        {
+            ThrowCoinAtPosition(Input.mousePosition);
+        }
     }
 
     void HandleMovement()
@@ -81,13 +90,25 @@ public class Player : MonoBehaviour
         return (Vector3.Distance(transform.position, p_MovePoint.transform.position) < p_Agent.stoppingDistance);
     }
 
-    void SetPlayerMovePoint(Vector3 position)
+    bool IsFloorHit(Vector3 position, out RaycastHit hit)
     {
         Ray ray = Camera.main.ScreenPointToRay(position);
-        RaycastHit hit;
         int layerMask = 1 << 8;
 
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    void SetPlayerMovePoint(Vector3 position)
+    {
+        RaycastHit hit;
+        if (IsFloorHit(position, out hit))
         {
             SetWalking(false);
             if (turnCoroutine != null)
@@ -97,13 +118,49 @@ public class Player : MonoBehaviour
             p_MovePoint.transform.position = hit.point;
             p_MovePoint.SetActive(true);
             p_Agent.SetDestination(p_MovePoint.transform.position);
-            turnCoroutine = StartCoroutine(TurnTowardsMovePointAndWalk());
+            turnCoroutine = StartCoroutine(TurnTowardsPointAndAct(p_MovePoint.transform.position, PlayerActionWalk));
         }
     }
 
-    IEnumerator TurnTowardsMovePointAndWalk()
+    void ThrowCoinAtPosition(Vector3 position)
     {
-        Quaternion lookRotation = Quaternion.LookRotation(p_MovePoint.transform.position - transform.position);
+        if (coinsRemaining <= 0)
+        {
+            return;
+        }
+        
+        RaycastHit hit;
+        if (IsFloorHit(position, out hit))
+        {
+            SetWalking(false);
+            if (turnCoroutine != null)
+            {
+                StopCoroutine(turnCoroutine);
+            }
+            coinTarget = hit.point;
+            turnCoroutine = StartCoroutine(TurnTowardsPointAndAct(coinTarget, PlayerActionThrowCoin));
+        }
+    }
+
+    delegate void PlayerAction();
+
+    void PlayerActionWalk()
+    {
+        SetWalking(true);
+    }
+
+    void PlayerActionThrowCoin()
+    {
+        if (coinTarget != null)
+        {
+            coinsRemaining--;
+            Instantiate(coinPrefab, coinTarget, Quaternion.identity);
+        }
+    }
+
+    IEnumerator TurnTowardsPointAndAct(Vector3 point, PlayerAction action)
+    {
+        Quaternion lookRotation = Quaternion.LookRotation(point - transform.position);
         Quaternion targetRotation = new Quaternion(transform.rotation.x, lookRotation.y, transform.rotation.z, lookRotation.w);
 
         while (Mathf.Abs(Quaternion.Dot(transform.rotation, targetRotation)) < 0.98f)
@@ -113,6 +170,6 @@ public class Player : MonoBehaviour
         }
         yield return new WaitForSeconds(0.01f);
 
-        SetWalking(true);
+        action();
     }
 }
