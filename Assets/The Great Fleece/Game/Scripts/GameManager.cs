@@ -12,13 +12,12 @@ public class GameManager : MonoBehaviour
         if (gameOverCutscene != null)
         {
             gameOverCutscene.SetActive(true);
-            StartCoroutine(DestroyEntities());
         }
     }
 
     private IEnumerator DestroyEntities()
     {
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.05f);
 
         if (entities.Length > 0)
         {
