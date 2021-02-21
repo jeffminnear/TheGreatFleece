@@ -15,19 +15,34 @@ public class GuardAI : MonoBehaviour
         Reverse,
         Branch
     }
-    public NavMode _navMode;
+    public NavMode navMode;
     public List<Transform> waypoints;
     [Tooltip("Index of the first destination. Use 1 if guard is positioned at 0, etc.")]
     public int _startWaypointIndex = 0;
     [Tooltip("Only applies to 'Branch' NavMode. When the guard reaches this waypoint, he will randomly move to one of the remaining waypoints and then reverse from there. Must be lower than the index of the last waypoint.")]
-    public int _branchStartWaypointIndex = 0;
+    public int branchStartWaypointIndex = 0;
 
-    public List<Transform> _w_points;
-    private int _currentTarget;
+    private List<Transform> localWaypoints;
+    private int currentTarget;
     private NavMeshAgent g_Agent;
     private Animator g_Animator;
-    private bool _walk = false;
-    private bool _reversing = false;
+    private bool isWalking = false;
+    private bool isReversing = false;
+    private float stoppingDistance = 1f;
+    [SerializeField]
+    private float alertDistance = 20f;
+    private bool alerted = false;
+
+    public void CoinDroppedAtPoint(Vector3 point)
+    {
+        float distance = (transform.position - point).magnitude;
+        if (distance < alertDistance)
+        {
+            alerted = true;
+            g_Agent.SetDestination(point);
+            g_Agent.stoppingDistance = 2.5f;
+        }
+    }
 
     void Awake()
     {
@@ -41,17 +56,19 @@ public class GuardAI : MonoBehaviour
 
     void InitializeGuard()
     {
-        _w_points = GetLocalWaypoints();
-        _currentTarget = _startWaypointIndex;
+        localWaypoints = GetLocalWaypoints();
+        currentTarget = _startWaypointIndex;
 
         g_Agent = gameObject.GetComponent<NavMeshAgent>();
         g_Animator = gameObject.GetComponent<Animator>();
 
         VerifyComponents(gameObject, g_Agent, g_Animator);
 
-        if (_w_points.Count > 0 && _w_points[_currentTarget] != null)
+        g_Agent.stoppingDistance = stoppingDistance;
+
+        if (localWaypoints.Count > 0 && localWaypoints[currentTarget] != null)
         {
-            g_Agent.SetDestination(_w_points[_currentTarget].position);
+            g_Agent.SetDestination(localWaypoints[currentTarget].position);
         }
         else
         {
@@ -61,15 +78,15 @@ public class GuardAI : MonoBehaviour
 
     List<Transform> GetLocalWaypoints()
     {
-        if (_navMode == NavMode.Branch)
+        if (navMode == NavMode.Branch)
         {
-            if (waypoints.Count == 0 || _branchStartWaypointIndex >= waypoints.Count - 1)
+            if (waypoints.Count == 0 || branchStartWaypointIndex >= waypoints.Count - 1)
             {
                 return waypoints;
             }
             List<Transform> waypointsCopy = new List<Transform>(waypoints);
-            List<Transform> startList = waypointsCopy.GetRange(0, _branchStartWaypointIndex + 1);
-            waypointsCopy.RemoveRange(0, _branchStartWaypointIndex + 1);
+            List<Transform> startList = waypointsCopy.GetRange(0, branchStartWaypointIndex + 1);
+            waypointsCopy.RemoveRange(0, branchStartWaypointIndex + 1);
             startList.Add(waypointsCopy[Random.Range(0, waypointsCopy.Count)]);
             return startList;
         }
@@ -86,71 +103,76 @@ public class GuardAI : MonoBehaviour
     {
         if (IsGuardAtDestination())
         {
-            // make sure walking animation has stopped
-            if (_walk)
+            if (isWalking)
             {
-                SetNextWaypoint();
+                if (alerted)
+                {
+                    StartCoroutine(SetWaypointAfterPause(currentTarget));
+                }
+                else
+                {
+                    SetNextWaypoint();
+                }
             }
         }
         else
         {            
-            // make sure walking animation is running
-            if (!_walk)
+            if (!isWalking)
             {
                 StartCoroutine(TurnAndWalk());
             }
         }
     }
 
-    void SetWalk(bool val)
+    void SetWalking(bool val)
     {
-        _walk = val;
+        isWalking = val;
         g_Animator.SetBool("Walk", val);
     }
 
     void SetNextWaypoint()
     {
-        int maxIndex = _w_points.Count - 1;
+        int maxIndex = localWaypoints.Count - 1;
         if (maxIndex < 0)
         {
             return;
         }
 
-        if (_reversing)
+        if (isReversing)
         {
-            if (_currentTarget > 0)
+            if (currentTarget > 0)
             {
-                _currentTarget = 0;
-                SetWaypoint(_currentTarget);
+                currentTarget = 0;
+                SetWaypoint(currentTarget);
             }
             else // back to first waypoint
             {
-                _w_points = GetLocalWaypoints();
-                _reversing = false;
-                _currentTarget++;
-                StartCoroutine(SetWaypointAfterPause(_currentTarget));
+                localWaypoints = GetLocalWaypoints();
+                isReversing = false;
+                currentTarget++;
+                StartCoroutine(SetWaypointAfterPause(currentTarget));
             }
         }
         else
         {
-            if (_currentTarget < maxIndex)
+            if (currentTarget < maxIndex)
             {
-                _currentTarget++;
-                SetWaypoint(_currentTarget);
+                currentTarget++;
+                SetWaypoint(currentTarget);
             }
             else // last waypoint in list
             {
-                switch (_navMode)
+                switch (navMode)
                 {
                     case NavMode.Loop:
-                        _currentTarget = 0;
-                        SetWaypoint(_currentTarget);
+                        currentTarget = 0;
+                        SetWaypoint(currentTarget);
                         break;
                     case NavMode.Reverse:
                     case NavMode.Branch:
-                        _reversing = true;
-                        _currentTarget--;
-                        StartCoroutine(SetWaypointAfterPause(_currentTarget));
+                        isReversing = true;
+                        currentTarget--;
+                        StartCoroutine(SetWaypointAfterPause(currentTarget));
                         break;
                     default:
                         break;
@@ -161,9 +183,9 @@ public class GuardAI : MonoBehaviour
 
     void SetWaypoint(int i)
     {
-        if (_w_points[i] != null)
+        if (localWaypoints.Count > i && localWaypoints[i] != null)
         {
-            g_Agent.SetDestination(_w_points[i].position);
+            g_Agent.SetDestination(localWaypoints[i].position);
         }
     }
 
@@ -174,9 +196,17 @@ public class GuardAI : MonoBehaviour
 
     IEnumerator SetWaypointAfterPause(int waypointIndex)
     {
-        SetWalk(false);
+        SetWalking(false);
 
-        yield return new WaitForSeconds(GetPatrolPauseDelay());
+        float delay = GetPatrolPauseDelay();
+
+        if (alerted)
+        {
+            alerted = false;
+            delay *= 2f;
+        }
+
+        yield return new WaitForSeconds(delay);
 
         SetWaypoint(waypointIndex);
     }
@@ -185,6 +215,6 @@ public class GuardAI : MonoBehaviour
     {
         yield return new WaitForSeconds(0.25f);
 
-        SetWalk(true);
+        SetWalking(true);
     }
 }

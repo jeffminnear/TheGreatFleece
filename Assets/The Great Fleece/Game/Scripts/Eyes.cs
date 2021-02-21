@@ -6,13 +6,13 @@ using static Helpers.Validation;
 
 public class Eyes : MonoBehaviour
 {
-    private GameManager _gameManager;
+    private GameManager gameManager;
 
     void Awake()
     {
-        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
-        if (_gameManager == null)
+        if (gameManager == null)
         {
             Debug.LogError("GameManager is missing!");
         }
@@ -22,7 +22,7 @@ public class Eyes : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            _gameManager.GameOver();
+            gameManager.GameOver();
         }
     }
 }

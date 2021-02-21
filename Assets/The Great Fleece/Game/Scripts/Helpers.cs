@@ -8,6 +8,8 @@ namespace Helpers
 {
     public class Validation : MonoBehaviour
     {
+        private static string Name = "Helpers.Validation";
+
         public static void VerifyComponents(GameObject gameObject, params Component[] components)
         {
             var trace = new StackTrace(1);
@@ -23,7 +25,7 @@ namespace Helpers
                 if (c == null)
                 {
                     string componentName = Regex.Replace(c.GetType().ToString(), classFromTypeRegex, "$1");
-                    string message = string.Format("{0} of GameObject '{1}' is NULL at {2}.{3}", componentName, gameObject.name, callingClass, callingMethod);
+                    string message = string.Format(Name + ": {0} of GameObject '{1}' is NULL at {2}.{3}", componentName, gameObject.name, callingClass, callingMethod);
                     UnityEngine.Debug.LogError(message);
                 }
             }
