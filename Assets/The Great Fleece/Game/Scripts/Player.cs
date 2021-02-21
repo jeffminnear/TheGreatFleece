@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     [Tooltip("The sound clip that will play when the Player Move Point animates")]
     public AudioClip pmp_soundClip;
 
+    private GameManager gameManager;
     private GameObject p_MovePoint;
     private NavMeshAgent p_Agent;
     private Animator p_Animator;
@@ -61,8 +62,9 @@ public class Player : MonoBehaviour
         p_Animator = gameObject.GetComponentInChildren<Animator>();
 
         speaker = GameObject.Find("Speaker").GetComponent<Speaker>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
-        VerifyComponents(gameObject, p_Agent, p_Animator, speaker);
+        VerifyComponents(gameObject, p_Agent, p_Animator, speaker, gameManager);
 
         p_Agent.speed = moveSpeed;
         p_Animator.SetBool("Walk", false);
@@ -70,6 +72,11 @@ public class Player : MonoBehaviour
 
     void GetInput()
     {
+        if (!gameManager.gameIsActive)
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0)) // Left Click
         {
             CancelCoroutine(throwCoroutine, finishedThrowing, SetFinishedThrowing, "CancelThrow");

@@ -7,11 +7,14 @@ public class GameManager : MonoBehaviour
     public GameObject[] entities;
     public GameObject gameOverCutscene;
 
+    public bool gameIsActive { get; private set; } = true;
+
     public void GameOver()
     {
         if (gameOverCutscene != null)
         {
             gameOverCutscene.SetActive(true);
+            gameIsActive = false;
         }
     }
 
