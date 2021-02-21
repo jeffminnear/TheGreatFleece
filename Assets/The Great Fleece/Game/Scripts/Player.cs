@@ -18,8 +18,13 @@ public class Player : MonoBehaviour
     private float moveSpeed = 5f;
     [SerializeField]
     private float turnSpeed = 8f;
+    [SerializeField]
+    private float coinThrowDelay = 1f;
     private bool isWalking = false;
     private Coroutine turnCoroutine;
+    private bool finishedTurning = true;
+    private Coroutine throwCoroutine;
+    private bool finishedThrowing = true;
     private Vector3 coinTarget;
     [SerializeField]
     private int coinsRemaining = 1;
@@ -59,12 +64,45 @@ public class Player : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0)) // Left Click
         {
+            CancelCoroutine(throwCoroutine, finishedThrowing, SetFinishedThrowing, "CancelThrow");
             SetPlayerMovePoint(Input.mousePosition);
         }
         else if (Input.GetMouseButton(1)) // Right Click
         {
+            CancelCoroutine(throwCoroutine, finishedThrowing, SetFinishedThrowing, "CancelThrow");
             ThrowCoinAtPosition(Input.mousePosition);
         }
+    }
+
+    void CancelCoroutine(Coroutine coroutine, bool finished, SetFinished setFinished)
+    {
+        if (coroutine != null && !finished)
+        {
+            StopCoroutine(coroutine);
+            setFinished(true);
+        }
+    }
+
+    void CancelCoroutine(Coroutine coroutine, bool finished, SetFinished setFinished, string animationTrigger)
+    {
+        if (coroutine != null && !finished)
+        {
+            StopCoroutine(coroutine);
+            setFinished(true);
+            p_Animator.SetTrigger(animationTrigger);
+        }
+    }
+
+    delegate void SetFinished(bool finished);
+
+    void SetFinishedThrowing(bool val)
+    {
+        finishedThrowing = val;
+    }
+
+    void SetFinishedTurning(bool val)
+    {
+        finishedTurning = val;
     }
 
     void HandleMovement()
@@ -111,14 +149,11 @@ public class Player : MonoBehaviour
         if (IsFloorHit(position, out hit))
         {
             SetWalking(false);
-            if (turnCoroutine != null)
-            {
-                StopCoroutine(turnCoroutine);
-            }
+            CancelCoroutine(turnCoroutine, finishedTurning, SetFinishedTurning);
             p_MovePoint.transform.position = hit.point;
             p_MovePoint.SetActive(true);
             p_Agent.SetDestination(p_MovePoint.transform.position);
-            turnCoroutine = StartCoroutine(TurnTowardsPointAndAct(p_MovePoint.transform.position, PlayerActionWalk));
+            turnCoroutine = StartCoroutine(TurnTowardsPointAndAct(p_MovePoint.transform.position, SetFinishedTurning, PlayerActionWalk));
         }
     }
 
@@ -133,12 +168,9 @@ public class Player : MonoBehaviour
         if (IsFloorHit(position, out hit))
         {
             SetWalking(false);
-            if (turnCoroutine != null)
-            {
-                StopCoroutine(turnCoroutine);
-            }
+            CancelCoroutine(turnCoroutine, finishedTurning, SetFinishedTurning);
             coinTarget = hit.point;
-            turnCoroutine = StartCoroutine(TurnTowardsPointAndAct(coinTarget, PlayerActionThrowCoin));
+            turnCoroutine = StartCoroutine(TurnTowardsPointAndAct(coinTarget, SetFinishedTurning, PlayerActionThrowCoin));
         }
     }
 
@@ -153,19 +185,34 @@ public class Player : MonoBehaviour
     {
         if (coinTarget != null)
         {
-            coinsRemaining--;
-            Instantiate(coinPrefab, coinTarget, Quaternion.identity);
-
-            GuardAI[] guards = GameObject.FindObjectsOfType<GuardAI>();
-            foreach( GuardAI guard in guards)
-            {
-                guard.CoinDroppedAtPoint(coinTarget);
-            }
+            throwCoroutine = StartCoroutine(ThrowCoinRoutine(SetFinishedThrowing));
         }
     }
 
-    IEnumerator TurnTowardsPointAndAct(Vector3 point, PlayerAction action)
+    IEnumerator ThrowCoinRoutine(SetFinished finishedThrowing)
     {
+        finishedThrowing(false);
+
+        p_Animator.SetTrigger("Throw");
+
+        yield return new WaitForSeconds(coinThrowDelay);
+
+        coinsRemaining--;
+        Instantiate(coinPrefab, coinTarget, Quaternion.identity);
+
+        GuardAI[] guards = GameObject.FindObjectsOfType<GuardAI>();
+        foreach( GuardAI guard in guards)
+        {
+            guard.CoinDroppedAtPoint(coinTarget);
+        }
+
+        finishedThrowing(true);
+    }
+
+    IEnumerator TurnTowardsPointAndAct(Vector3 point, SetFinished finishedTurning, PlayerAction action)
+    {
+        finishedTurning(false);
+
         Quaternion lookRotation = Quaternion.LookRotation(point - transform.position);
         Quaternion targetRotation = new Quaternion(transform.rotation.x, lookRotation.y, transform.rotation.z, lookRotation.w);
 
@@ -175,7 +222,7 @@ public class Player : MonoBehaviour
             yield return null;
         }
         yield return new WaitForSeconds(0.01f);
-
+        finishedTurning(true);
         action();
     }
 }
