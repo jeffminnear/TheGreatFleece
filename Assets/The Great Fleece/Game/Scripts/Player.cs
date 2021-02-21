@@ -11,11 +11,16 @@ public class Player : MonoBehaviour
 {
     public GameObject coinPrefab;
     public GameObject playerMovePointPrefab;
+    [Tooltip("The sound clip that will play when the Player Move Point animates")]
+    public AudioClip pmp_soundClip;
 
+    private GameManager gameManager;
     private GameObject p_MovePoint;
     private NavMeshAgent p_Agent;
     private Animator p_Animator;
     private Animator pmp_Animator;
+    private Speaker speaker;
+
     [SerializeField]
     private float moveSpeed = 5f;
     [SerializeField]
@@ -56,7 +61,10 @@ public class Player : MonoBehaviour
         p_Agent = gameObject.GetComponent<NavMeshAgent>();
         p_Animator = gameObject.GetComponentInChildren<Animator>();
 
-        VerifyComponents(gameObject, p_Agent, p_Animator);
+        speaker = GameObject.Find("Speaker").GetComponent<Speaker>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
+        VerifyComponents(gameObject, p_Agent, p_Animator, speaker, gameManager);
 
         p_Agent.speed = moveSpeed;
         p_Animator.SetBool("Walk", false);
@@ -64,6 +72,11 @@ public class Player : MonoBehaviour
 
     void GetInput()
     {
+        if (!gameManager.gameIsActive)
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0)) // Left Click
         {
             CancelCoroutine(throwCoroutine, finishedThrowing, SetFinishedThrowing, "CancelThrow");
@@ -154,6 +167,7 @@ public class Player : MonoBehaviour
             CancelCoroutine(turnCoroutine, finishedTurning, SetFinishedTurning);
             p_MovePoint.transform.position = new Vector3(hit.point.x, hit.point.y + 0.5f, hit.point.z);
             pmp_Animator.SetTrigger("Sparkle");
+            speaker.PlayClip(pmp_soundClip, 0.05f);
             p_Agent.SetDestination(p_MovePoint.transform.position);
             turnCoroutine = StartCoroutine(TurnTowardsPointAndAct(p_MovePoint.transform.position, SetFinishedTurning, PlayerActionWalk));
         }

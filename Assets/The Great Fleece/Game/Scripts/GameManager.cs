@@ -7,18 +7,20 @@ public class GameManager : MonoBehaviour
     public GameObject[] entities;
     public GameObject gameOverCutscene;
 
+    public bool gameIsActive { get; private set; } = true;
+
     public void GameOver()
     {
         if (gameOverCutscene != null)
         {
             gameOverCutscene.SetActive(true);
-            StartCoroutine(DestroyEntities());
+            gameIsActive = false;
         }
     }
 
     private IEnumerator DestroyEntities()
     {
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.05f);
 
         if (entities.Length > 0)
         {

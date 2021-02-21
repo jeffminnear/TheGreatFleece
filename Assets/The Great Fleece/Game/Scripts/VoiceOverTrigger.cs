@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
 public class VoiceOverTrigger : MonoBehaviour
 {
-    private AudioSource audioSource;
+    public AudioClip voiceOverClip;
+
+    private Speaker speaker;
     private bool hasPlayedClip = false;
 
-    void Awake()
+    void Start()
     {
-        audioSource = gameObject.GetComponent<AudioSource>();
+        speaker = GameObject.Find("Speaker").GetComponent<Speaker>();
 
-        Helpers.Validation.VerifyComponents(gameObject, audioSource);
+        Helpers.Validation.VerifyComponents(gameObject, speaker);
     }
 
     void OnTriggerEnter(Collider other)
@@ -22,7 +23,7 @@ public class VoiceOverTrigger : MonoBehaviour
             if (!hasPlayedClip)
             {
                 hasPlayedClip = true;
-                audioSource.Play();
+                speaker.PlayClip(voiceOverClip, 0.5f);
             }
         }
     }

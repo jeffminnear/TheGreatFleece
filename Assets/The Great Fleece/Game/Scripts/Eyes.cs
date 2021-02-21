@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using static Helpers.Validation;
-
 public class Eyes : MonoBehaviour
 {
     private GameManager gameManager;
