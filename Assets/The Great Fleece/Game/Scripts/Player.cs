@@ -10,10 +10,12 @@ using static Helpers.Validation;
 public class Player : MonoBehaviour
 {
     public GameObject coinPrefab;
+    public GameObject playerMovePointPrefab;
 
     private GameObject p_MovePoint;
     private NavMeshAgent p_Agent;
     private Animator p_Animator;
+    private Animator pmp_Animator;
     [SerializeField]
     private float moveSpeed = 5f;
     [SerializeField]
@@ -43,10 +45,10 @@ public class Player : MonoBehaviour
 
     void InitializeMovePoint()
     {
-        p_MovePoint = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        p_MovePoint.GetComponent<MeshRenderer>().enabled = false;
-        p_MovePoint.transform.position = transform.position;
-        p_MovePoint.SetActive(false);
+        p_MovePoint = Instantiate(playerMovePointPrefab, transform.position, Quaternion.identity);
+        pmp_Animator = p_MovePoint.GetComponent<Animator>();
+
+        VerifyComponents(p_MovePoint, pmp_Animator);
     }
 
     void InitializePlayer()
@@ -150,8 +152,8 @@ public class Player : MonoBehaviour
         {
             SetWalking(false);
             CancelCoroutine(turnCoroutine, finishedTurning, SetFinishedTurning);
-            p_MovePoint.transform.position = hit.point;
-            p_MovePoint.SetActive(true);
+            p_MovePoint.transform.position = new Vector3(hit.point.x, hit.point.y + 0.5f, hit.point.z);
+            pmp_Animator.SetTrigger("Sparkle");
             p_Agent.SetDestination(p_MovePoint.transform.position);
             turnCoroutine = StartCoroutine(TurnTowardsPointAndAct(p_MovePoint.transform.position, SetFinishedTurning, PlayerActionWalk));
         }

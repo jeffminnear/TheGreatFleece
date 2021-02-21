@@ -41183,6 +41183,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coinPrefab: {fileID: 1667124884920464, guid: 4aee20544b12e47219af132208bc5ccb, type: 3}
+  playerMovePointPrefab: {fileID: 3977647614124846461, guid: b7d47b6cc29e6aa4380c9ca580bc37f9,
+    type: 3}
   moveSpeed: 5
   turnSpeed: 6.15
   coinThrowDelay: 1
