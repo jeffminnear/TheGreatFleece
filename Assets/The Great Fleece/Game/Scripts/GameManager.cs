@@ -4,11 +4,38 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject[] entities;
+    private static GameManager _instance;
+    public static GameManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                Debug.LogError("GameManager is NULL!");
+            }
+
+            return _instance;
+        }
+    }
+
     public GameObject gameOverCutscene;
 
     public bool gameIsActive { get; private set; } = true;
+    public bool PlayerHasCard { get; set; } = false;
     private string currentCutsceneId = null;
+
+    void Awake()
+    {
+        if (_instance == null)
+        {
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
 
     public void GameOver()
     {
@@ -35,18 +62,5 @@ public class GameManager : MonoBehaviour
         GameObject.Find(currentCutsceneId).SetActive(false);
         currentCutsceneId = null;
         gameIsActive = true;
-    }
-
-    private IEnumerator DestroyEntities()
-    {
-        yield return new WaitForSeconds(0.05f);
-
-        if (entities.Length > 0)
-        {
-            foreach (GameObject entity in entities)
-            {
-                Destroy(entity);
-            }
-        }
     }
 }

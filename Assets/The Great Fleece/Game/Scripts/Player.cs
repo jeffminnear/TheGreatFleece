@@ -14,7 +14,6 @@ public class Player : MonoBehaviour
     [Tooltip("The sound clip that will play when the Player Move Point animates")]
     public AudioClip pmp_soundClip;
 
-    private GameManager gameManager;
     private GameObject p_MovePoint;
     private NavMeshAgent p_Agent;
     private Animator p_Animator;
@@ -63,9 +62,8 @@ public class Player : MonoBehaviour
         p_Animator = gameObject.GetComponentInChildren<Animator>();
 
         speaker = GameObject.Find("Speaker").GetComponent<Speaker>();
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
-        VerifyComponents(gameObject, p_Agent, p_Animator, speaker, gameManager);
+        VerifyComponents(gameObject, p_Agent, p_Animator, speaker);
 
         mainCamera = GameObject.Find("CM Main").transform;
 
@@ -77,7 +75,7 @@ public class Player : MonoBehaviour
 
     void GetInput()
     {
-        if (!gameManager.gameIsActive)
+        if (!GameManager.Instance.gameIsActive)
         {
             return;
         }

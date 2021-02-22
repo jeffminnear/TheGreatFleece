@@ -4121,9 +4121,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 843af5ea0ac20d44eb04f1e354c78528, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entities:
-  - {fileID: 1362580809}
-  - {fileID: 1758031687}
   gameOverCutscene: {fileID: 1900787414}
 --- !u!4 &114317797
 Transform:
@@ -4153,26 +4150,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Events:
     m_Signals:
-    - {fileID: 0}
     - {fileID: 11400000, guid: f6f20ffd4e36b72449a365397e7fe200, type: 2}
     - {fileID: 11400000, guid: e035f30fc528fc6418e9dcba267dfc4a, type: 2}
     - {fileID: 11400000, guid: cd54e9b8e557d5e4f97b2b3eea9f4fc2, type: 2}
     - {fileID: 11400000, guid: 79de6b017310ee94c9cc3a87b94a149b, type: 2}
     - {fileID: 11400000, guid: a337814981ca3eb4386286cd3ab289a8, type: 2}
     m_Events:
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 114317796}
-          m_MethodName: StartCutscene
-          m_Mode: 5
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: Start_Level_Cutscene
-            m_BoolArgument: 0
-          m_CallState: 2
     - m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 114317796}
