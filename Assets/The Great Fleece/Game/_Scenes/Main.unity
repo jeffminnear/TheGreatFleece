@@ -36575,6 +36575,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cutscene: {fileID: 458674982}
+  grantsPlayerCard: 0
+  requiresPlayerHasCard: 1
 --- !u!1001 &1464570826
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -42395,7 +42397,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1789264553
 Transform:
   m_ObjectHideFlags: 0
@@ -52929,6 +52931,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cutscene: {fileID: 229440813}
+  grantsPlayerCard: 1
+  requiresPlayerHasCard: 0
 --- !u!1 &2077180757
 GameObject:
   m_ObjectHideFlags: 0
