@@ -19,7 +19,6 @@ public class CutsceneTrigger : MonoBehaviour
         {
             if (!hasTriggeredCutscene)
             {
-                Debug.Log("Triggering");
                 hasTriggeredCutscene = true;
                 cutscene.SetActive(true);
             }

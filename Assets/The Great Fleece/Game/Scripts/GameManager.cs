@@ -18,6 +18,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void StartCutscene()
+    {
+        gameIsActive = false;
+    }
+
+    public void EndCutscene()
+    {
+        gameIsActive = true;
+    }
+
     private IEnumerator DestroyEntities()
     {
         yield return new WaitForSeconds(0.05f);
