@@ -35,13 +35,33 @@ public class AudioManager : MonoBehaviour
         }
 
         VO = transform.Find("VO").GetComponent<AudioSource>();
-        VO.volume = 0.45f;
+        VO.volume = 0.35f;
         SFX = transform.Find("SFX").GetComponent<AudioSource>();
-        SFX.volume = 0.8f;
+        SFX.volume = 0.3f;
         Music = transform.Find("Music").GetComponent<AudioSource>();
-        Music.volume = 0.7f;
+        Music.volume = 0.4f;
 
         Helpers.Validation.VerifyComponents(gameObject, VO, SFX, Music);
+
+        Music.Play();
+    }
+
+    void Update()
+    {
+        if (GameManager.Instance.gameIsActive)
+        {
+            if (!Music.isPlaying)
+            {
+                Music.Play();
+            }
+        }
+        else
+        {
+            if (Music.isPlaying)
+            {
+                Music.Stop();
+            }
+        }
     }
 
     public void PlayVO(AudioClip clip, float volume = 1f)
@@ -52,10 +72,5 @@ public class AudioManager : MonoBehaviour
     public void PlaySFX(AudioClip clip, float volume = 1f)
     {
         SFX.PlayOneShot(clip, volume);
-    }
-
-    public void PlayMusic(AudioClip clip, float volume = 1f)
-    {
-        Music.PlayOneShot(clip, volume);
     }
 }

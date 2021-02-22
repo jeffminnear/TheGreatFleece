@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     public GameObject playerMovePointPrefab;
     [Tooltip("The sound clip that will play when the Player Move Point animates")]
     public AudioClip pmp_soundClip;
+    public AudioClip coinSound;
 
     private GameObject p_MovePoint;
     private NavMeshAgent p_Agent;
@@ -168,7 +169,7 @@ public class Player : MonoBehaviour
             CancelCoroutine(turnCoroutine, finishedTurning, SetFinishedTurning);
             p_MovePoint.transform.position = new Vector3(hit.point.x, hit.point.y + 0.5f, hit.point.z);
             pmp_Animator.SetTrigger("Sparkle");
-            AudioManager.Instance.PlaySFX(pmp_soundClip, 0.05f);
+            AudioManager.Instance.PlaySFX(pmp_soundClip);
             p_Agent.SetDestination(p_MovePoint.transform.position);
             turnCoroutine = StartCoroutine(TurnTowardsPointAndAct(p_MovePoint.transform.position, SetFinishedTurning, PlayerActionWalk));
         }
@@ -216,6 +217,7 @@ public class Player : MonoBehaviour
 
         coinsRemaining--;
         Instantiate(coinPrefab, coinTarget, Quaternion.identity);
+        AudioManager.Instance.PlaySFX(coinSound, 18f);
 
         GuardAI[] guards = GameObject.FindObjectsOfType<GuardAI>();
         foreach( GuardAI guard in guards)
