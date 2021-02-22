@@ -6,13 +6,21 @@ public class CameraTrigger : MonoBehaviour
 {
     [SerializeField]
     private Transform cameraPosition;
+    private Transform mainCamera;
+
+    void Start()
+    {
+        mainCamera = GameObject.Find("CM Main").transform;
+
+        Helpers.Validation.VerifyReferences(gameObject, mainCamera);
+    }
     
     void OnTriggerEnter(Collider other)
     {
         if (other.transform.tag == "Player")
         {
-            Camera.main.transform.position = cameraPosition.transform.position;
-            Camera.main.transform.rotation = cameraPosition.transform.rotation;
+            mainCamera.position = cameraPosition.transform.position;
+            mainCamera.rotation = cameraPosition.transform.rotation;
         }
     }
 }

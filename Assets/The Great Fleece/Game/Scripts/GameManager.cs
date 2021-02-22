@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverCutscene;
 
     public bool gameIsActive { get; private set; } = true;
+    private string currentCutsceneId = null;
 
     public void GameOver()
     {
@@ -16,6 +17,24 @@ public class GameManager : MonoBehaviour
             gameOverCutscene.SetActive(true);
             gameIsActive = false;
         }
+    }
+
+    public void StartCutscene(string name)
+    {
+        currentCutsceneId = name;
+        gameIsActive = false;
+    }
+
+    public void EndCutscene()
+    {
+        if (currentCutsceneId == null)
+        {
+            return;
+        }
+        
+        GameObject.Find(currentCutsceneId).SetActive(false);
+        currentCutsceneId = null;
+        gameIsActive = true;
     }
 
     private IEnumerator DestroyEntities()
