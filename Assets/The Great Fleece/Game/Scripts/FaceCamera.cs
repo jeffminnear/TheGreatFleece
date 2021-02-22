@@ -4,8 +4,17 @@ using UnityEngine;
 
 public class FaceCamera : MonoBehaviour
 {
+    private Transform mainCamera;
+
+    void Start()
+    {
+        mainCamera = GameObject.Find("CM Main").transform;
+
+        Helpers.Validation.VerifyReferences(gameObject, mainCamera);
+    }
+    
     void Update()
     {
-        transform.LookAt(Camera.main.transform.position, Vector3.up);
+        transform.LookAt(mainCamera.position, Vector3.up);
     }
 }

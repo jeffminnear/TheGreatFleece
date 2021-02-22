@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     private Animator p_Animator;
     private Animator pmp_Animator;
     private Speaker speaker;
+    private Transform mainCamera;
 
     [SerializeField]
     private float moveSpeed = 5f;
@@ -65,6 +66,10 @@ public class Player : MonoBehaviour
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
         VerifyComponents(gameObject, p_Agent, p_Animator, speaker, gameManager);
+
+        mainCamera = GameObject.Find("CM Main").transform;
+
+        VerifyReferences(gameObject, mainCamera);
 
         p_Agent.speed = moveSpeed;
         p_Animator.SetBool("Walk", false);
