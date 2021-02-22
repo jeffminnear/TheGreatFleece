@@ -18,7 +18,6 @@ public class Player : MonoBehaviour
     private NavMeshAgent p_Agent;
     private Animator p_Animator;
     private Animator pmp_Animator;
-    private Speaker speaker;
     private Transform mainCamera;
 
     [SerializeField]
@@ -61,9 +60,8 @@ public class Player : MonoBehaviour
         p_Agent = gameObject.GetComponent<NavMeshAgent>();
         p_Animator = gameObject.GetComponentInChildren<Animator>();
 
-        speaker = GameObject.Find("Speaker").GetComponent<Speaker>();
 
-        VerifyComponents(gameObject, p_Agent, p_Animator, speaker);
+        VerifyComponents(gameObject, p_Agent, p_Animator);
 
         mainCamera = GameObject.Find("CM Main").transform;
 
@@ -170,7 +168,7 @@ public class Player : MonoBehaviour
             CancelCoroutine(turnCoroutine, finishedTurning, SetFinishedTurning);
             p_MovePoint.transform.position = new Vector3(hit.point.x, hit.point.y + 0.5f, hit.point.z);
             pmp_Animator.SetTrigger("Sparkle");
-            speaker.PlayClip(pmp_soundClip, 0.05f);
+            AudioManager.Instance.PlaySFX(pmp_soundClip, 0.05f);
             p_Agent.SetDestination(p_MovePoint.transform.position);
             turnCoroutine = StartCoroutine(TurnTowardsPointAndAct(p_MovePoint.transform.position, SetFinishedTurning, PlayerActionWalk));
         }
