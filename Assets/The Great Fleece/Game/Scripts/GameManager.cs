@@ -27,13 +27,13 @@ public class GameManager : MonoBehaviour
     public bool gameIsActive { get; private set; } = true;
     public bool PlayerHasCard { get; set; } = false;
     private string currentCutsceneId = null;
+    private GameObject pauseCanvas;
 
     void Awake()
     {
         if (_instance == null)
         {
             _instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -43,6 +43,12 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        pauseCanvas = GameObject.Find("PauseCanvas");
+
+        Helpers.Validation.VerifyReferences(gameObject, pauseCanvas);
+
+        pauseCanvas.SetActive(false);
+
         if (SessionManager.PlayStartLevelCutscene)
         {
             startLevelCutscene.SetActive(true);
@@ -51,15 +57,43 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (currentCutsceneId == startLevelCutscene.name)
+        if (currentCutsceneId != null)
         {
             if (Input.GetKeyDown(KeyCode.S))
             {
-                PlayableDirector director = startLevelCutscene.GetComponent<PlayableDirector>();
+                PlayableDirector director = GameObject.Find(currentCutsceneId).GetComponent<PlayableDirector>();
                 double fadeOutPoint = director.duration - 0.5;
                 director.time = fadeOutPoint;
             }
         }
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (Time.timeScale == 0f)
+                {
+                    Resume();
+                }
+                else
+                {
+                    Pause();
+                }
+            }
+        }
+    }
+
+    public void Pause()
+    {
+        Time.timeScale = 0f;
+        gameIsActive = false;
+        pauseCanvas.SetActive(true);
+    }
+
+    public void Resume()
+    {
+        Time.timeScale = 1f;
+        gameIsActive = true;
+        pauseCanvas.SetActive(false);
     }
 
     public void GameOver()
