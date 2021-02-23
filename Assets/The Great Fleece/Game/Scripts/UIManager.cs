@@ -34,7 +34,7 @@ public class UIManager : MonoBehaviour
     public void Restart(bool showIntroCutscene)
     {
         SessionManager.PlayStartLevelCutscene = showIntroCutscene;
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("Main");
     }
 
     public void Quit()
