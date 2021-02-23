@@ -39,7 +39,7 @@ public class AudioManager : MonoBehaviour
         SFX = transform.Find("SFX").GetComponent<AudioSource>();
         SFX.volume = 0.3f;
         Music = transform.Find("Music").GetComponent<AudioSource>();
-        Music.volume = 0.4f;
+        Music.volume = 0.2f;
 
         Helpers.Validation.VerifyComponents(gameObject, VO, SFX, Music);
 
