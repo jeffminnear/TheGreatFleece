@@ -13,13 +13,12 @@ public class Player : MonoBehaviour
     public GameObject playerMovePointPrefab;
     [Tooltip("The sound clip that will play when the Player Move Point animates")]
     public AudioClip pmp_soundClip;
+    public AudioClip coinSound;
 
-    private GameManager gameManager;
     private GameObject p_MovePoint;
     private NavMeshAgent p_Agent;
     private Animator p_Animator;
     private Animator pmp_Animator;
-    private Speaker speaker;
     private Transform mainCamera;
 
     [SerializeField]
@@ -62,10 +61,8 @@ public class Player : MonoBehaviour
         p_Agent = gameObject.GetComponent<NavMeshAgent>();
         p_Animator = gameObject.GetComponentInChildren<Animator>();
 
-        speaker = GameObject.Find("Speaker").GetComponent<Speaker>();
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
-        VerifyComponents(gameObject, p_Agent, p_Animator, speaker, gameManager);
+        VerifyComponents(gameObject, p_Agent, p_Animator);
 
         mainCamera = GameObject.Find("CM Main").transform;
 
@@ -77,7 +74,7 @@ public class Player : MonoBehaviour
 
     void GetInput()
     {
-        if (!gameManager.gameIsActive)
+        if (!GameManager.Instance.gameIsActive)
         {
             return;
         }
@@ -172,7 +169,7 @@ public class Player : MonoBehaviour
             CancelCoroutine(turnCoroutine, finishedTurning, SetFinishedTurning);
             p_MovePoint.transform.position = new Vector3(hit.point.x, hit.point.y + 0.5f, hit.point.z);
             pmp_Animator.SetTrigger("Sparkle");
-            speaker.PlayClip(pmp_soundClip, 0.05f);
+            AudioManager.Instance.PlaySFX(pmp_soundClip);
             p_Agent.SetDestination(p_MovePoint.transform.position);
             turnCoroutine = StartCoroutine(TurnTowardsPointAndAct(p_MovePoint.transform.position, SetFinishedTurning, PlayerActionWalk));
         }
@@ -220,6 +217,7 @@ public class Player : MonoBehaviour
 
         coinsRemaining--;
         Instantiate(coinPrefab, coinTarget, Quaternion.identity);
+        AudioManager.Instance.PlaySFX(coinSound, 18f);
 
         GuardAI[] guards = GameObject.FindObjectsOfType<GuardAI>();
         foreach( GuardAI guard in guards)

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class SecurityCamera : MonoBehaviour
 {
-    private GameManager gameManager;
     private Animator sc_Animator;
     private MeshRenderer sc_Renderer;
     private float gameOverDelay = 0.5f;
@@ -16,8 +15,6 @@ public class SecurityCamera : MonoBehaviour
         sc_Renderer = gameObject.GetComponent<MeshRenderer>();
 
         Helpers.Validation.VerifyComponents(gameObject, sc_Animator, sc_Renderer);
-
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     void OnTriggerEnter(Collider other)
@@ -43,6 +40,6 @@ public class SecurityCamera : MonoBehaviour
 
         yield return new WaitForSeconds(gameOverDelay);
 
-        gameManager.GameOver();
+        GameManager.Instance.GameOver();
     }
 }
