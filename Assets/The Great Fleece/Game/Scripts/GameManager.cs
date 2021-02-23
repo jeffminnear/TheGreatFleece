@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
     public bool gameIsActive { get; private set; } = true;
     public bool PlayerHasCard { get; set; } = false;
     private string currentCutsceneId = null;
+    private GameObject pauseCanvas;
 
     void Awake()
     {
@@ -42,6 +43,12 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        pauseCanvas = GameObject.Find("PauseCanvas");
+
+        Helpers.Validation.VerifyReferences(gameObject, pauseCanvas);
+
+        pauseCanvas.SetActive(false);
+
         if (SessionManager.PlayStartLevelCutscene)
         {
             startLevelCutscene.SetActive(true);
@@ -59,6 +66,34 @@ public class GameManager : MonoBehaviour
                 director.time = fadeOutPoint;
             }
         }
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (Time.timeScale == 0f)
+                {
+                    Resume();
+                }
+                else
+                {
+                    Pause();
+                }
+            }
+        }
+    }
+
+    public void Pause()
+    {
+        Time.timeScale = 0f;
+        gameIsActive = false;
+        pauseCanvas.SetActive(true);
+    }
+
+    public void Resume()
+    {
+        Time.timeScale = 1f;
+        gameIsActive = true;
+        pauseCanvas.SetActive(false);
     }
 
     public void GameOver()

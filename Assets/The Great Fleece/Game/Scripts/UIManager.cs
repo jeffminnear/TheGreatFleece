@@ -34,12 +34,19 @@ public class UIManager : MonoBehaviour
     public void Restart(bool showIntroCutscene)
     {
         SessionManager.PlayStartLevelCutscene = showIntroCutscene;
-        SceneManager.LoadScene("Main");
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("LoadingScreen");
     }
 
     public void Quit()
     {
         Debug.Log("Quitting application...");
         Application.Quit();
+    }
+
+    public void QuitToMenu()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("Menu");
     }
 }
