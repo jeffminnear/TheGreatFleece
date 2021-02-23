@@ -33,7 +33,6 @@ public class GameManager : MonoBehaviour
         if (_instance == null)
         {
             _instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -51,11 +50,11 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (currentCutsceneId == startLevelCutscene.name)
+        if (currentCutsceneId != null)
         {
             if (Input.GetKeyDown(KeyCode.S))
             {
-                PlayableDirector director = startLevelCutscene.GetComponent<PlayableDirector>();
+                PlayableDirector director = GameObject.Find(currentCutsceneId).GetComponent<PlayableDirector>();
                 double fadeOutPoint = director.duration - 0.5;
                 director.time = fadeOutPoint;
             }
