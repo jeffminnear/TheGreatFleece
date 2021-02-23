@@ -14,6 +14,6 @@ public class MainMenu : MonoBehaviour
     public void StartGame()
     {
         SessionManager.PlayStartLevelCutscene = true;
-        SceneManager.LoadScene("Main");
+        SceneManager.LoadScene("LoadingScreen");
     }
 }
