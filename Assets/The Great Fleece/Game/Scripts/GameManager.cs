@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,7 +19,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public GameObject startLevelCutscene;
     public GameObject gameOverCutscene;
+    public GameObject winLevelCutscene;
+    public GameObject player;
 
     public bool gameIsActive { get; private set; } = true;
     public bool PlayerHasCard { get; set; } = false;
@@ -37,12 +41,40 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        if (SessionManager.PlayStartLevelCutscene)
+        {
+            startLevelCutscene.SetActive(true);
+        }
+    }
+
+    void Update()
+    {
+        if (currentCutsceneId == startLevelCutscene.name)
+        {
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                PlayableDirector director = startLevelCutscene.GetComponent<PlayableDirector>();
+                double fadeOutPoint = director.duration - 0.5;
+                director.time = fadeOutPoint;
+            }
+        }
+    }
+
     public void GameOver()
     {
         if (gameOverCutscene != null)
         {
             gameOverCutscene.SetActive(true);
-            gameIsActive = false;
+        }
+    }
+
+    public void WinLevel()
+    {
+        if (winLevelCutscene != null)
+        {
+            winLevelCutscene.SetActive(true);
         }
     }
 
@@ -50,6 +82,7 @@ public class GameManager : MonoBehaviour
     {
         currentCutsceneId = name;
         gameIsActive = false;
+        AudioManager.Instance.StopAll();
     }
 
     public void EndCutscene()

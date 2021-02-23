@@ -4121,7 +4121,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 843af5ea0ac20d44eb04f1e354c78528, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startLevelCutscene: {fileID: 1434138867}
   gameOverCutscene: {fileID: 1900787414}
+  winLevelCutscene: {fileID: 458674982}
+  player: {fileID: 1758031687}
 --- !u!4 &114317797
 Transform:
   m_ObjectHideFlags: 0
@@ -16034,7 +16037,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!95 &444735784
 Animator:
   serializedVersion: 3
@@ -42410,7 +42413,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1789264553
 Transform:
   m_ObjectHideFlags: 0

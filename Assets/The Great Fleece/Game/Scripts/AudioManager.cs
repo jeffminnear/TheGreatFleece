@@ -55,13 +55,6 @@ public class AudioManager : MonoBehaviour
                 Music.Play();
             }
         }
-        else
-        {
-            if (Music.isPlaying)
-            {
-                Music.Stop();
-            }
-        }
     }
 
     public void PlayVO(AudioClip clip, float volume = 1f)
@@ -72,5 +65,12 @@ public class AudioManager : MonoBehaviour
     public void PlaySFX(AudioClip clip, float volume = 1f)
     {
         SFX.PlayOneShot(clip, volume);
+    }
+
+    public void StopAll()
+    {
+        VO.Stop();
+        SFX.Stop();
+        Music.Stop();
     }
 }
